@@ -6,6 +6,6 @@ namespace Player
     {
         bool CanShoot { get; }
         void Reset();
-        void SetRate(float rate);
+        void SetTimeout(float timeout);
     }
 }

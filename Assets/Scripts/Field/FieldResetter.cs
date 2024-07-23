@@ -1,4 +1,3 @@
-using Common;
 using GameLogic;
 using GameLogic.Interfaces;
 using Settings;
@@ -22,7 +21,8 @@ namespace Field
         {
             _field
                 .SetHealth(_fieldSettings.Health)
-                .SetOnDeath(() => _eventBus.Dispatch(new PlayerKilledEvent()));
+                .SetOnDeath(() => _eventBus.Dispatch(new PlayerKilledEvent()))
+                .Run();
         }
     }
 }

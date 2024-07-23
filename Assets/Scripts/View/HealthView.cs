@@ -21,6 +21,16 @@ namespace View
             {
                 view.transform.SetParent(parent);
             }
+            
+            protected override void OnSpawned(HealthView item)
+            {
+                item.OnSpawned(this);
+            }
+            
+            protected override void OnDespawned(HealthView item)
+            {
+                item.OnDespawned();
+            }
         }
     }
 }

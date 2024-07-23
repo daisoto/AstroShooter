@@ -6,27 +6,32 @@ namespace Enemy
     public class EnemyDeathProcessor: IDeathProcessor
     {
         private readonly IEnemyAnimator _animator;
-        private readonly IDespawnable _despawnable;
 
-        private OnDeath _onDeath;
+        private OnDeath _onPreDeath;
+        private OnDeath _onAfterDeath;
 
         public EnemyDeathProcessor(IEnemyAnimator animator)
         {
             _animator = animator;
         }
 
-        public void SetOnDeath(OnDeath onDeath)
+        public void SetOnPreDeath(OnDeath onDeath)
         {
-            _onDeath = onDeath;
+            _onPreDeath = onDeath;
+        }
+
+        public void SetOnAfterDeath(OnDeath onDeath)
+        {
+            _onAfterDeath = onDeath;
         }
 
         public void OnDeath() => OnDeathInternal().Forget();
 
         private async UniTask OnDeathInternal()
         {
-            _onDeath?.Invoke();
+            _onPreDeath?.Invoke();
             await _animator.PlayDeath();
-            _despawnable.Despawn();
+            _onAfterDeath?.Invoke();
         }
     }
 }

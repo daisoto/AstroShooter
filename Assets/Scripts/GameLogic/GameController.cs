@@ -1,4 +1,5 @@
 using System;
+using Common;
 using Field;
 using GameLogic.Interfaces;
 using Player;
@@ -14,17 +15,20 @@ namespace GameLogic
         private readonly IFactory<IGameSession> _sessionFactory;
         private readonly IPlayerRunner _playerRunner;
         private readonly IFieldResetter _fieldResetter;
+        private readonly ISetupable[] _setupables;
 
         private IGameSession _currentSession;
         private IDisposable _sub;
+        private IDisposable _setupSub;
 
         public GameController(IEventBus bus, IFactory<IGameSession> sessionFactory, 
-            IFieldResetter fieldResetter, IPlayerRunner playerRunner)
+            IFieldResetter fieldResetter, IPlayerRunner playerRunner, ISetupable[] setupables)
         {
             _bus = bus;
             _sessionFactory = sessionFactory;
             _fieldResetter = fieldResetter;
             _playerRunner = playerRunner;
+            _setupables = setupables;
         }
 
         public void Initialize()
@@ -37,7 +41,7 @@ namespace GameLogic
                     if (_currentSession is { IsActive: true })
                     {
                         Debug.LogWarning("Previous session was not finished! Aborting.");
-                        _currentSession.Stop();
+                        StopGame();
                     }
 
                     StartGame();
@@ -61,6 +65,10 @@ namespace GameLogic
 
         private void StartGame()
         {
+            var cd = new CompositeDisposable();
+            Array.ForEach(_setupables, s => s.Setup().AddTo(cd)); 
+            _setupSub = cd;
+            
             _currentSession = _sessionFactory.Create();
             _currentSession.Start();
             _playerRunner.Run();
@@ -71,6 +79,7 @@ namespace GameLogic
         {
             _currentSession.Stop();
             _playerRunner.Stop();
+            _setupSub?.Dispose();
         }
     }
 }

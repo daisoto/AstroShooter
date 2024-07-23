@@ -1,11 +1,12 @@
-using Common;
+using System;
 using Settings;
 using UnityEngine;
 using Zenject;
+using Random = UnityEngine.Random;
 
 namespace Enemy
 {
-    public class EnemyFactory: IFactory<Vector2, OnDeath, EnemyBehaviour>
+    public class EnemyFactory: IFactory<Vector2, Action<EnemyBehaviour>, EnemyBehaviour>
     {
         private readonly EnemySettings _settings;
         private readonly IMemoryPool<EnemyBehaviour> _pool;
@@ -16,12 +17,13 @@ namespace Enemy
             _pool = pool;
         }
 
-        public EnemyBehaviour Create(Vector2 position, OnDeath onDeath)
+        public EnemyBehaviour Create(Vector2 position, Action<EnemyBehaviour> onDeath)
         {
             return _pool
                 .Spawn()
                 .SetPosition(position)
-                .SetOnDeath(onDeath)
+                .SetOnPreDeath(onDeath)
+                .SetOnAfterDeath()
                 .SetHealth(_settings.EnemyHealth)
                 .SetDamageDealt(_settings.EnemyDamage)
                 .SetSpeed(Random.Range(_settings.MinEnemySpeed, _settings.MaxEnemySpeed));

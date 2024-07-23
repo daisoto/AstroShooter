@@ -1,6 +1,8 @@
+using Zenject;
+
 namespace GameLogic.Interfaces
 {
-    public interface IGameSession
+    public interface IGameSession: IPoolable<IMemoryPool<IGameSession>>
     {
         bool IsActive { get; }
         void Start();

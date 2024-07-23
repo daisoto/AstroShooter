@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: ProjectileSettings
   m_EditorClassIdentifier: 
   <ProjectileDamage>k__BackingField: 1
-  <ProjectileSpeed>k__BackingField: 5
+  <ProjectileSpeed>k__BackingField: 50

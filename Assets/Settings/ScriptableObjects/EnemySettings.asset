@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce08deb82ffc493a9598aec5e23c3d0f, type: 3}
   m_Name: EnemySettings
   m_EditorClassIdentifier: 
-  <MinEnemiesNumber>k__BackingField: 3
-  <MaxEnemiesNumber>k__BackingField: 9
+  <MinEnemiesNumber>k__BackingField: 5
+  <MaxEnemiesNumber>k__BackingField: 10
   <MinEnemiesSpawnTime>k__BackingField: 2
   <MaxEnemiesSpawnTime>k__BackingField: 5
-  <MinEnemySpeed>k__BackingField: 4
-  <MaxEnemySpeed>k__BackingField: 6
-  <EnemyHealth>k__BackingField: 3
+  <MinEnemySpeed>k__BackingField: 10
+  <MaxEnemySpeed>k__BackingField: 25
+  <EnemyHealth>k__BackingField: 1
   <EnemyDamage>k__BackingField: 1

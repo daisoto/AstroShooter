@@ -80,9 +80,15 @@ namespace Player
                 .NonLazy();
 
             Container
+                .BindInterfacesTo<PositionSetter>()
+                .AsSingle()
+                .WithArguments(_behaviour.transform)
+                .NonLazy();
+
+            Container
                 .BindInterfacesTo<PlayerPositionProvider>()
                 .AsSingle()
-                .WithArguments(_rigidbody)
+                .WithArguments(_behaviour.transform)
                 .NonLazy();
         }
     }

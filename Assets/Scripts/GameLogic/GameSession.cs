@@ -5,7 +5,7 @@ using Zenject;
 
 namespace GameLogic
 {
-    public class GameSession: IGameSession, IPoolable<IMemoryPool<IGameSession>>
+    public class GameSession: IGameSession
     {
         public bool IsActive { get; private set; }
 
@@ -38,11 +38,11 @@ namespace GameLogic
                 .AddTo(cd);
 
             _bus
-                .Subscribe<EnemyKilledEvent>(_ => OnEnemyKilled())
+                .Subscribe<PlayerKilledEvent>(_ => OnPlayerKilled())
                 .AddTo(cd);
 
             _bus
-                .Subscribe<PlayerKilledEvent>(_ => OnPlayerKilled())
+                .Subscribe<EnemyKilledEvent>(_ => OnEnemyKilled())
                 .AddTo(cd);
 
             _dis = cd;
@@ -80,6 +80,17 @@ namespace GameLogic
             _bus.Dispatch(new LoseGameEvent());
         }
 
-        public class Pool : MemoryPool<IGameSession> { }
+        public class Pool : MemoryPool<IGameSession>
+        {
+            protected override void OnSpawned(IGameSession item)
+            {
+                item.OnSpawned(this);
+            }
+
+            protected override void OnDespawned(IGameSession item)
+            {
+                item.OnDespawned();
+            }
+        }
     }
 }

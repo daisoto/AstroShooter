@@ -8,7 +8,7 @@ namespace Projectile
     {
         private readonly Animator _animator;
         
-        private static int EXPLOSE_KEY = Animator.StringToHash("Hit-4 Animation");
+        private static int EXPLODE_KEY = Animator.StringToHash("Hit-4 Animation");
 
         public ProjectileAnimator(Animator animator)
         {
@@ -17,7 +17,7 @@ namespace Projectile
 
         public async UniTask PlayExplode()
         {
-            _animator.SetTrigger(EXPLOSE_KEY);
+            _animator.SetTrigger(EXPLODE_KEY);
             await _animator.WaitAnimationToEnd(0);
         }
     }

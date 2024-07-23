@@ -8,22 +8,18 @@ namespace Player
 {
     public class PlayerBehaviour: MonoBehaviour
     {
-        private IMoveProvider _moveProvider;
-        private IEnemyDetector _enemyDetector;
-        private IShootingRateTimer _shootingRateTimer;
-        private ISetupable[] _setupables;
+        [InjectLocal]
+        private readonly IMoveProvider _moveProvider;
+        [InjectLocal]
+        private readonly  IEnemyDetector _enemyDetector;
+        [InjectLocal]
+        private readonly  IShootingRateTimer _shootingRateTimer;
+        [InjectLocal]
+        private readonly  IPositionSetter _positionSetter;
+        [InjectLocal]
+        private readonly  ISetupable[] _setupables;
         
         private IDisposable _runDisposable;
-
-        [Inject]
-        public void Construct(IMoveProvider moveProvider, IEnemyDetector enemyDetector, 
-            IShootingRateTimer shootingRateTimer, ISetupable[] setupables)
-        {
-            _moveProvider = moveProvider;
-            _enemyDetector = enemyDetector;
-            _shootingRateTimer = shootingRateTimer;
-            _setupables = setupables;
-        }
         
         #region fluent builder
 
@@ -43,7 +39,14 @@ namespace Player
 
         public PlayerBehaviour SetShootingRate(float rate)
         {
-            _shootingRateTimer.SetRate(rate);
+            _shootingRateTimer.SetTimeout(1f / rate);
+            
+            return this;
+        }
+
+        public PlayerBehaviour SetPosition(Vector3 position)
+        {
+            _positionSetter.SetPosition(position);
             
             return this;
         }

@@ -20,7 +20,7 @@ namespace Enemy
                 {
                     if (!_isInterrupted)
                     {
-                        _move.Execute(Vector2.down * _speed);
+                        _move.Execute(Vector2.down * _speed * Time.deltaTime);
                     }
                 });
         }

@@ -7,25 +7,19 @@ using Zenject;
 namespace Projectile
 {
     public class ProjectileBehaviour: MonoBehaviour, 
-        IPoolable<IMemoryPool<ProjectileBehaviour>>, IDespawnable
+        IPoolable<IMemoryPool<ProjectileBehaviour>>
     {
-        private IDamageDealer _damageDealer;
-        private IProjectileMoveProvider _moveProvider;
-        private IPositionSetter _positionSetter;
-        private ISetupable[] _setupables;
+        [InjectLocal]
+        private readonly IProjectileDamageDealer _damageDealer;
+        [InjectLocal]
+        private readonly IProjectileMoveProvider _moveProvider;
+        [InjectLocal]
+        private readonly IPositionSetter _positionSetter;
+        [InjectLocal]
+        private readonly ISetupable[] _setupables;
         
         private IMemoryPool<ProjectileBehaviour> _pool;
         private IDisposable _runDisposable;
-
-        [Inject]
-        public void Construct(IDamageDealer damageDealer, IPositionSetter positionSetter, 
-            IProjectileMoveProvider moveProvider, ISetupable[] setupables)
-        {
-            _damageDealer = damageDealer;
-            _positionSetter = positionSetter;
-            _moveProvider = moveProvider;
-            _setupables = setupables;
-        }
         
         #region fluent builder
 
@@ -50,10 +44,17 @@ namespace Projectile
             return this;
         }
 
+        public ProjectileBehaviour SetDespawnAfterDamage()
+        {
+            _damageDealer.SetOnDamage(() => _pool.Despawn(this));
+            
+            return this;
+        }
+
         public ProjectileBehaviour SetDirection(Vector2 direction)
         {
             _moveProvider.SetDirection(direction);
-            transform.rotation = Quaternion.LookRotation(direction, Vector3.forward);
+            transform.rotation = Quaternion.FromToRotation(Vector3.right, direction);
             
             return this;
         }
@@ -65,6 +66,7 @@ namespace Projectile
             var cd = new CompositeDisposable();
             Array.ForEach(_setupables, s => s.Setup().AddTo(cd)); 
             _runDisposable = cd;
+            gameObject.SetActive(true);
         }
 
         public void OnDespawned()
@@ -75,13 +77,7 @@ namespace Projectile
 
         public void OnSpawned(IMemoryPool<ProjectileBehaviour> pool)
         {
-            gameObject.SetActive(true);
             _pool = pool;
-        }
-
-        public void Despawn()
-        {
-            _pool.Despawn(this);
         }
 
         public class Pool : MemoryPool<ProjectileBehaviour>
@@ -91,15 +87,15 @@ namespace Projectile
                 item.gameObject.SetActive(false);
             }
             
-            // protected override void OnSpawned(ProjectileBehaviour item)
-            // {
-            //     item.OnSpawned(this);
-            // }
-            //
-            // protected override void OnDespawned(ProjectileBehaviour item)
-            // {
-            //     item.OnDespawned();
-            // }
+            protected override void OnSpawned(ProjectileBehaviour item)
+            {
+                item.OnSpawned(this);
+            }
+            
+            protected override void OnDespawned(ProjectileBehaviour item)
+            {
+                item.OnDespawned();
+            }
         }
     }
 }

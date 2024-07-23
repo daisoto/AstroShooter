@@ -14,10 +14,10 @@ namespace GameLogic
 
         public Vector3 GetPoint()
         {
-            var points = _spawnPoints.Points;
+            var points = _spawnPoints.EnemyPoints;
             var index = Random.Range(0, points.Length);
 
-            return points[index].position;
+            return points[index];
         }
     }
 }

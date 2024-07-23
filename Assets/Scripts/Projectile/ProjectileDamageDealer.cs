@@ -2,22 +2,22 @@ using Common;
 
 namespace Projectile
 {
-    public class ProjectileDamageDealer: DamageDealer
+    public class ProjectileDamageDealer: DamageDealer, IProjectileDamageDealer
     {
-        private readonly IDespawnable _despawnable;
-
-        public ProjectileDamageDealer(IDespawnable despawnable)
-        {
-            _despawnable = despawnable;
-        }
+        private OnDamage _onDamage;
 
         public override void TryDeal(IDamageReceiver receiver)
         {
             if (receiver.Type.HasFlag(DamageReceiverType.Enemy))
             {
                 receiver.Receive(_damage);
-                _despawnable.Despawn();
+                _onDamage?.Invoke();
             }
+        }
+
+        public void SetOnDamage(OnDamage onDamage)
+        {
+            _onDamage = onDamage;
         }
     }
 }

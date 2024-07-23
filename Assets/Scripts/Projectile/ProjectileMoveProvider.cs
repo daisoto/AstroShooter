@@ -18,7 +18,7 @@ namespace Projectile
                 .EveryUpdate()
                 .Subscribe(_ =>
                 {
-                    _move.Execute(_direction * _speed);
+                    _move.Execute(_direction * _speed * Time.deltaTime);
                 });
         }
         

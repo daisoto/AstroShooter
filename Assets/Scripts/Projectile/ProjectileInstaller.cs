@@ -14,6 +14,9 @@ namespace Projectile
 
         [SerializeField] 
         private Rigidbody2D _rigidbody;
+
+        [SerializeField] 
+        private ProjectileDamageDealer _damageDealer;
         
         public override void InstallBindings()
         {
@@ -32,11 +35,12 @@ namespace Projectile
             Container
                 .BindInterfacesTo<PositionSetter>()
                 .AsSingle()
-                .WithArguments(_rigidbody)
+                .WithArguments(_behaviour.transform)
                 .NonLazy();
             
             Container
                 .BindInterfacesTo<ProjectileDamageDealer>()
+                .FromInstance(_damageDealer)
                 .AsSingle()
                 .NonLazy();
             

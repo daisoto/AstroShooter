@@ -1,6 +1,8 @@
+using UnityEngine;
+
 namespace Common
 {
-    public abstract class DamageDealer: IDamageDealer
+    public abstract class DamageDealer: MonoBehaviour, IDamageDealerConfigurable
     {
         protected int _damage;
 

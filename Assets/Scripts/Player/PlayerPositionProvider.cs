@@ -4,13 +4,13 @@ namespace Player
 {
     public class PlayerPositionProvider: IPlayerPositionProvider
     {
-        private readonly Rigidbody2D _rigidbody;
+        private readonly Transform _transform;
 
-        public Vector2 Position => _rigidbody.position;
+        public Vector2 Position => _transform.position;
 
-        public PlayerPositionProvider(Rigidbody2D rigidbody)
+        public PlayerPositionProvider(Transform transform)
         {
-            _rigidbody = rigidbody;
+            _transform = transform;
         }
     }
 }

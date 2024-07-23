@@ -17,6 +17,9 @@ namespace Enemy
 
         [SerializeField] 
         private EnemyBehaviour _behaviour;
+
+        [SerializeField] 
+        private EnemyDamageDealer _damageDealer;
         
         public override void InstallBindings()
         {
@@ -49,7 +52,7 @@ namespace Enemy
             Container
                 .BindInterfacesTo<PositionSetter>()
                 .AsSingle()
-                .WithArguments(_rigidbody)
+                .WithArguments(_behaviour.transform)
                 .NonLazy();
             
             Container
@@ -64,6 +67,7 @@ namespace Enemy
             
             Container
                 .BindInterfacesTo<EnemyDamageDealer>()
+                .FromInstance(_damageDealer)
                 .AsSingle()
                 .NonLazy();
             

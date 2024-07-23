@@ -21,7 +21,8 @@ namespace Projectile
                 .SetPosition(data.StartPosition)
                 .SetDirection(data.Direction)
                 .SetSpeed(_settings.ProjectileSpeed)
-                .SetDamage(_settings.ProjectileDamage);
+                .SetDamage(_settings.ProjectileDamage)
+                .SetDespawnAfterDamage();
         }
     }
 }

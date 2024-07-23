@@ -16,10 +16,10 @@ namespace Installers
     public class GameLogicInstaller: MonoInstaller<UIInstaller>
     {
         [SerializeField] 
-        private GameField _gameField;
+        private GameField _gameFieldPrefab;
 
         [SerializeField] 
-        private PlayerBehaviour _player;
+        private PlayerBehaviour _playerPrefab;
 
         [Space, SerializeField] 
         private EnemyBehaviour _enemyPrefab;
@@ -51,16 +51,9 @@ namespace Installers
         private void InstallGameLogic()
         {
             Container
-                .Bind<ISpawnPointsProvider>()
+                .Bind(typeof(ISpawnPointsProvider), typeof(IFieldResetter))
                 .FromSubContainerResolve()
-                .ByNewContextPrefab(_gameField)
-                .AsSingle()
-                .NonLazy();
-
-            Container
-                .Bind<IFieldResetter>()
-                .FromSubContainerResolve()
-                .ByNewContextPrefab(_gameField)
+                .ByNewContextPrefab(_gameFieldPrefab)
                 .AsSingle()
                 .NonLazy();
 
@@ -110,13 +103,6 @@ namespace Installers
                 .FromInstance(_fieldSettings)
                 .AsSingle()
                 .NonLazy();
-
-            Container
-                .Bind<IPlayerRunner>()
-                .FromSubContainerResolve()
-                .ByNewContextPrefab(_player)
-                .AsSingle()
-                .NonLazy();
         }
 
         private void InstallEnemiesLogic()
@@ -140,17 +126,10 @@ namespace Installers
                 .FromResolve();
             
             Container
-                // .BindIFactory<>()
-                .Bind<IFactory<Vector2, OnDeath, EnemyBehaviour>>()
+                .Bind<IFactory<Vector2, Action<EnemyBehaviour>, EnemyBehaviour>>()
                 .To<EnemyFactory>()
                 .AsSingle()
                 .NonLazy();
-
-            // Container
-            //     .BindIFactory<Vector2, OnDeath, EnemyBehaviour, IFactory<Vector2, OnDeath, EnemyBehaviour>>()
-            //     .To<EnemyFactory>()
-            //     .FromSubContainerResolve()
-            //     .ByNewContextPrefab<EnemyInstaller>(_enemyPrefab);
         }
 
         private void InstallProjectilesLogic()
@@ -195,6 +174,13 @@ namespace Installers
 
             Container
                 .BindInterfacesAndSelfTo<InputManager>()
+                .AsSingle()
+                .NonLazy();
+
+            Container
+                .Bind<IPlayerRunner>()
+                .FromSubContainerResolve()
+                .ByNewContextPrefab(_playerPrefab)
                 .AsSingle()
                 .NonLazy();
         }

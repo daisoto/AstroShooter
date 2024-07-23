@@ -7,30 +7,23 @@ using Zenject;
 namespace Enemy
 {
     public class EnemyBehaviour: MonoBehaviour, 
-        IPoolable<IMemoryPool<EnemyBehaviour>>, IDespawnable
+        IPoolable<IMemoryPool<EnemyBehaviour>>
     {
-        private IHealthComponent _health;
-        private IEnemyMoveProvider _moveProvider;
-        private IDeathProcessor _deathProcessor;
-        private IPositionSetter _positionSetter;
-        private IDamageDealer _damageDealer;
-        private ISetupable[] _setupables;
+        [InjectLocal]
+        private readonly IHealthComponent _health;
+        [InjectLocal]
+        private readonly IEnemyMoveProvider _moveProvider;
+        [InjectLocal]
+        private readonly IDeathProcessor _deathProcessor;
+        [InjectLocal]
+        private readonly IPositionSetter _positionSetter;
+        [InjectLocal]
+        private readonly IDamageDealerConfigurable _damageDealer;
+        [InjectLocal]
+        private readonly ISetupable[] _setupables;
 
         private IDisposable _runDisposable;
         private IMemoryPool<EnemyBehaviour> _pool;
-
-        [Inject]
-        public void Construct(IHealthComponent health, 
-            IEnemyMoveProvider moveProvider, IDeathProcessor deathProcessor, 
-            IPositionSetter positionSetter, IDamageDealer damageDealer, ISetupable[] setupables)
-        {
-            _health = health;
-            _moveProvider = moveProvider;
-            _deathProcessor = deathProcessor;
-            _positionSetter = positionSetter;
-            _damageDealer = damageDealer;
-            _setupables = setupables;
-        }
 
         #region fluent builder
 
@@ -41,9 +34,17 @@ namespace Enemy
             return this;
         }
 
-        public EnemyBehaviour SetOnDeath(OnDeath onDeath)
+        public EnemyBehaviour SetOnPreDeath(Action<EnemyBehaviour> onDeath)
         {
-            _deathProcessor.SetOnDeath(onDeath);
+            OnDeath wrap = () => onDeath(this);
+            _deathProcessor.SetOnPreDeath(wrap);
+
+            return this;
+        }
+
+        public EnemyBehaviour SetOnAfterDeath()
+        {
+            _deathProcessor.SetOnAfterDeath(Despawn);
 
             return this;
         }
@@ -76,11 +77,16 @@ namespace Enemy
             var cd = new CompositeDisposable();
             Array.ForEach(_setupables, s => s.Setup().AddTo(cd)); 
             _runDisposable = cd;
+            gameObject.SetActive(true);
+        }
+
+        public void Despawn()
+        {
+            _pool.Despawn(this);
         }
 
         public void OnSpawned(IMemoryPool<EnemyBehaviour> pool)
         {
-            gameObject.SetActive(true);
             _pool = pool;
         }
 
@@ -88,11 +94,6 @@ namespace Enemy
         {
             gameObject.SetActive(false);
             _runDisposable?.Dispose();
-        }
-
-        public void Despawn()
-        {
-            _pool.Despawn(this);
         }
 
         public bool IsAlive => _health.Health.Value > 0;
@@ -109,15 +110,15 @@ namespace Enemy
                 item.gameObject.SetActive(false);
             }
             
-            // protected override void OnSpawned(EnemyBehaviour item)
-            // {
-            //     item.OnSpawned(this);
-            // }
-            //
-            // protected override void OnDespawned(EnemyBehaviour item)
-            // {
-            //     item.OnDespawned();
-            // }
+            protected override void OnSpawned(EnemyBehaviour item)
+            {
+                item.OnSpawned(this);
+            }
+            
+            protected override void OnDespawned(EnemyBehaviour item)
+            {
+                item.OnDespawned();
+            }
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Player
         public bool CanShoot { get; private set; }
 
         private float _time;
-        private float _rate;
+        private float _timeout;
         
         public IDisposable Setup()
         {
@@ -18,9 +18,9 @@ namespace Player
                 .Subscribe(_ => Tick());
         }
 
-        public void SetRate(float rate)
+        public void SetTimeout(float timeout)
         {
-            _rate = rate;
+            _timeout = timeout;
         }
 
         public void Reset()
@@ -33,7 +33,7 @@ namespace Player
         {
             _time += Time.deltaTime;
 
-            if (_time >= _rate)
+            if (_time >= _timeout)
             {
                 CanShoot = true;
             }

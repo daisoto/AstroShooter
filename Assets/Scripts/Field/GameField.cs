@@ -1,4 +1,7 @@
-﻿using Common;
+﻿using System;
+using System.Linq;
+using Common;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
@@ -6,24 +9,30 @@ namespace Field
 {
     public class GameField : MonoBehaviour, ISpawnPointsProvider
     {
-        [field: SerializeField] 
-        public Transform[] Points { get; private set; }
+        public Vector2[] EnemyPoints => _enemyPointsInternal ??= _enemyPoints.Select(GetPosition).ToArray();
+        private Vector2[] _enemyPointsInternal; 
+        [SerializeField] 
+        private Transform[] _enemyPoints;
 
-        private IHealthComponent _health;
-        private IDeathProcessor _deathProcessor;
+        public Vector2 PlayerPoint => _playerPointInternal ??= GetPosition(_playerPoint);
+        private Vector2? _playerPointInternal;
+        [SerializeField] 
+        private Transform _playerPoint;
 
-        [Inject]
-        private void Construct(IHealthComponent health, IDeathProcessor deathProcessor)
-        {
-            _health = health;
-            _deathProcessor = deathProcessor;
-        }
+        [InjectLocal]
+        private readonly IHealthComponent _health;
+        [InjectLocal]
+        private readonly IDeathProcessor _deathProcessor;
+        [InjectLocal] 
+        private readonly ISetupable[] _setupables;
+
+        private IDisposable _runDisposable;
         
         #region fluent builder
 
         public GameField SetOnDeath(OnDeath onDeath)
         {
-            _deathProcessor.SetOnDeath(onDeath);
+            _deathProcessor.SetOnPreDeath(onDeath);
 
             return this;
         }
@@ -36,5 +45,18 @@ namespace Field
         }
         
         #endregion
+
+        public void Run()
+        {
+            _runDisposable?.Dispose();
+            var cd = new CompositeDisposable();
+            Array.ForEach(_setupables, s => s.Setup().AddTo(cd)); 
+            _runDisposable = cd;
+        }
+
+        private Vector2 GetPosition(Transform t)
+        {
+            return new Vector2(t.position.x, t.position.y);
+        }
     }
 }

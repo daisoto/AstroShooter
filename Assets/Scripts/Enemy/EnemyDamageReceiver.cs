@@ -19,6 +19,8 @@ namespace Enemy
             _health = health;
             _animator = animator;
             _enemyMoveProvider = enemyMoveProvider;
+
+            _damageReceived = new();
         }
 
         public void Receive(int damage)

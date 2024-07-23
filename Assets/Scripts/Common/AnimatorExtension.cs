@@ -7,10 +7,8 @@ namespace Common
     {
         public static async UniTask WaitAnimationToEnd(this Animator animator, int layer)
         {
-            while (animator.GetCurrentAnimatorStateInfo(layer).normalizedTime < 1f)
-            {
-                await UniTask.Yield();
-            }
+            var length = animator.GetCurrentAnimatorStateInfo(layer).length;
+            await UniTask.WaitForSeconds(length);
         }
     }
 }

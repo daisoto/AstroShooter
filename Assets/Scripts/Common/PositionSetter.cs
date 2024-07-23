@@ -4,16 +4,16 @@ namespace Common
 {
     public class PositionSetter: IPositionSetter
     {
-        private readonly Rigidbody2D _rigidbody;
+        private readonly Transform _transform;
 
-        public PositionSetter(Rigidbody2D rigidbody)
+        public PositionSetter(Transform transform)
         {
-            _rigidbody = rigidbody;
+            _transform = transform;
         }
 
         public void SetPosition(Vector2 position)
         {
-            _rigidbody.position = position;
+            _transform.position = position;
         }
     }
 }

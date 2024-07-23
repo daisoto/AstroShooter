@@ -6,28 +6,31 @@ using UnityEngine.InputSystem;
 
 public class InputManager: ISetupable
 {
-    public IObservable<Vector2> MoveDirection => _moveDirection;
-    private readonly ReactiveCommand<Vector2> _moveDirection;
-        
+    public Vector2 MoveDirection { get; private set; }
+
     private readonly InputMap _inputMap;
 
     public InputManager(InputMap inputMap)
     {
         _inputMap = inputMap;
-        
-        _moveDirection = new();
     }
 
     public IDisposable Setup()
     {
+        _inputMap.Enable();
         _inputMap.PlayerMove.Move.performed += ProcessMoveInput;
+        _inputMap.PlayerMove.Move.canceled += ProcessMoveInput;
 
         return Disposable.Create(() => 
-            _inputMap.PlayerMove.Move.performed -= ProcessMoveInput);
+        { 
+            _inputMap.PlayerMove.Move.performed -= ProcessMoveInput;
+            _inputMap.PlayerMove.Move.canceled -= ProcessMoveInput;
+            _inputMap.Disable();
+        });
     }
 
     private void ProcessMoveInput(InputAction.CallbackContext ctx)
     {
-        _moveDirection.Execute(ctx.ReadValue<Vector2>());
+        MoveDirection = ctx.ReadValue<Vector2>();
     }
 }

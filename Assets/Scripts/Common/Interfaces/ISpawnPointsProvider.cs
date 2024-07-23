@@ -4,6 +4,8 @@ namespace Common
 {
     public interface ISpawnPointsProvider
     {
-        Transform[] Points { get; }
+        Vector2[] EnemyPoints { get; }
+
+        Vector2 PlayerPoint { get; }
     }
 }

@@ -17,13 +17,20 @@ namespace View
         public void SetHealth(int num)
         {
             var count = _activeViews.Count;
-            if (num > count)
+            var diff = num - count;
+            if (diff > 0)
             {
-                _activeViews.Push(_pool.Spawn(_container));
+                for (int i = 0; i < diff; i++)
+                {
+                    _activeViews.Push(_pool.Spawn(_container));
+                }
             }
-            else if (num < count)
+            else if (diff < 0)
             {
-                _pool.Despawn(_activeViews.Pop());
+                for (int i = 0; i < -diff; i++)
+                {
+                    _pool.Despawn(_activeViews.Pop());
+                }
             }
         }
         

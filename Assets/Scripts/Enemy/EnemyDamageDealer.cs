@@ -1,15 +1,12 @@
 using Common;
+using Zenject;
 
 namespace Enemy
 {
     public class EnemyDamageDealer: DamageDealer
     {
+        [InjectLocal]
         private readonly IHealthComponent _healthComponent;
-
-        public EnemyDamageDealer(IHealthComponent healthComponent)
-        {
-            _healthComponent = healthComponent;
-        }
 
         public override void TryDeal(IDamageReceiver receiver)
         {

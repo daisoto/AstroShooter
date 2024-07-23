@@ -21,10 +21,10 @@ namespace Player
 
         public IDisposable Setup()
         {
-            return _inputManager
-                .MoveDirection
-                .Subscribe(dir => 
-                    _move.Execute(dir * _speed));
+            return Observable
+                .EveryFixedUpdate()
+                .Subscribe(_ => 
+                    _move.Execute(_inputManager.MoveDirection * _speed * Time.deltaTime));
         }
         
         public void SetSpeed(float speed)

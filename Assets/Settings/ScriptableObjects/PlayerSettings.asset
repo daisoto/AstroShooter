@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <PlayerSpeed>k__BackingField: 5
   <PlayerShootingRadius>k__BackingField: 5
-  <PlayerShootingRate>k__BackingField: 5
+  <PlayerShootingRate>k__BackingField: 0.5

@@ -6,14 +6,17 @@ namespace Field
     {
         private OnDeath _onDeath;
         
-        public void SetOnDeath(OnDeath onDeath)
+        public void SetOnPreDeath(OnDeath onDeath)
         {
             _onDeath = onDeath;
         }
 
+        public void SetOnAfterDeath(OnDeath onDeath)
+        { }
+
         public void OnDeath()
         {
-            throw new System.NotImplementedException();
+            _onDeath?.Invoke();
         }
     }
 }
