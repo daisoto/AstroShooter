@@ -1,11 +1,11 @@
 
 ## Description in English
 ### Controls
-- WASD to move player character
-- Automatic shooting
+- WASD to move player character;
+- Automatic shooting;
 
 ### Settings
-Game is setup by settings files in the corresponding folder.
+Game parameters are set up by settings files in the corresponding folder.
 
 ### 3rd party libraries
 - [UniRx](https://github.com/neuecc/UniRx) 
@@ -20,8 +20,11 @@ Copyright (c) 2024 Vladimir Kozlov
 ## Описание на русском
 
 ### Управление
-- WASD (ЦФЫВ) для перемещения персонажа игрока
-- Автоматическая стрельба
+- WASD (ЦФЫВ) для перемещения персонажа игрока;
+- Автоматическая стрельба;
+
+### Настройки
+Игровые параметры задаются в настройках в соответствующей папке.
 
 ### Сторонние библиотеки
 - [UniRx](https://github.com/neuecc/UniRx) 
