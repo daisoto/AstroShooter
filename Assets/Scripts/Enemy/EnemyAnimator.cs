@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Common;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
 
 namespace Enemy
 {
@@ -6,9 +8,9 @@ namespace Enemy
     {
         private readonly Animator _animator;
 
-        private static int MOVE_KEY = Animator.StringToHash("bomb_walk_down");
-        private static int DAMAGED_KEY = Animator.StringToHash("hit_A_down");
-        private static int DEATH_KEY = Animator.StringToHash("vanish");
+        private static int MOVE_KEY = Animator.StringToHash("Move");
+        private static int DAMAGED_KEY = Animator.StringToHash("Damaged");
+        private static int DEATH_KEY = Animator.StringToHash("Death");
 
         public EnemyAnimator(Animator animator)
         {
@@ -20,14 +22,16 @@ namespace Enemy
             _animator.SetTrigger(MOVE_KEY);
         }
 
-        public void PlayDamaged()
+        public async UniTask PlayDamaged()
         {
             _animator.SetTrigger(DAMAGED_KEY);
+            await _animator.WaitAnimationToEnd(0);
         }
 
-        public void PlayDeath()
+        public async UniTask PlayDeath()
         {
             _animator.SetTrigger(DEATH_KEY);
+            await _animator.WaitAnimationToEnd(0);
         }
     }
 }

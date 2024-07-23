@@ -1,40 +1,37 @@
 ﻿using System;
-using Common.Interfaces;
-using Settings;
+using Common;
 using UniRx;
 using UnityEngine;
-using Zenject;
 
 namespace Player
 {
-    public class PlayerShootController : IInitializable, IDisposable
+    public class PlayerShootController : ISetupable
     {
-        private readonly PlayerSettings _settings;
         private readonly IEnemyDetector _enemyDetector;
-        private readonly IShootPossibilityProvider _shootPossibilityProvider;
+        private readonly IShootingRateTimer _shootingRateTimer;
         private readonly IShooter _shooter;
 
-        private IDisposable _sub;
-
-        public PlayerShootController(PlayerSettings settings)
+        public PlayerShootController(IEnemyDetector enemyDetector, 
+            IShootingRateTimer shootingRateTimer, IShooter shooter)
         {
-            _settings = settings;
+            _enemyDetector = enemyDetector;
+            _shootingRateTimer = shootingRateTimer;
+            _shooter = shooter;
         }
 
-        public void Initialize()
+        public IDisposable Setup()
         {
-            _sub = _enemyDetector
+            return _enemyDetector
                 .EnemyPosition
                 .Subscribe(Shoot);
         }
 
-        public void Dispose() => _sub?.Dispose();
-
         private void Shoot(Vector2 target)
         {
-            if (_shootPossibilityProvider.CanShoot())
+            if (_shootingRateTimer.CanShoot)
             {
                 _shooter.Shoot(target);
+                _shootingRateTimer.Reset();
             }
         }
     }

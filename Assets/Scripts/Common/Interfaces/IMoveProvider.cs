@@ -1,10 +1,11 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Common.Interfaces
+namespace Common
 {
-    public interface IMoveProvider
+    public interface IMoveProvider: ISetupable
     {
-        public IObservable<Vector2> Move { get; }
+        IObservable<Vector2> MoveVector { get; }
+        void SetSpeed(float speed);
     }
 }

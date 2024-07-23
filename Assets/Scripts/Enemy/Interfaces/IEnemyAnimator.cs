@@ -1,9 +1,11 @@
-﻿namespace Enemy
+﻿using Cysharp.Threading.Tasks;
+
+namespace Enemy
 {
     public interface IEnemyAnimator
     {
         void PlayMove();
-        void PlayDamaged();
-        void PlayDeath();
+        UniTask PlayDamaged();
+        UniTask PlayDeath();
     }
 }

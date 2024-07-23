@@ -1,16 +1,11 @@
 ﻿using UniRx;
 
-namespace Components
+namespace Common
 {
-    public class HealthComponent
+    public class HealthComponent: IHealthComponent
     {
         public IReadOnlyReactiveProperty<int> Health => _health;
-        private readonly ReactiveProperty<int> _health;
-
-        public HealthComponent(int health)
-        {
-            _health = new(health);
-        }
+        private readonly ReactiveProperty<int> _health = new();
 
         public void Reset(int health)
         {
@@ -20,6 +15,11 @@ namespace Components
         public void Decrease(int value)
         {
             _health.Value -= value;
+        }
+
+        public void Kill()
+        {
+            _health.Value = 0;
         }
     }
 }
