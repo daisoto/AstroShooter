@@ -25,15 +25,19 @@ namespace Enemy
 
         public void Receive(int damage)
         {
-            _damageReceived.Enqueue(damage);
-            if (!_isProcessing)
+            if (_health.Health.Value > 0)
             {
-                ProcessDamage().Forget();
+                _damageReceived.Enqueue(damage);
+                if (!_isProcessing)
+                {
+                    ProcessDamage().Forget();
+                }
             }
         }
 
         public DamageReceiverType Type => DamageReceiverType.Enemy;
 
+        // todo animator is shit
         private async UniTask ProcessDamage()
         {
             _isProcessing = true;
@@ -42,13 +46,16 @@ namespace Enemy
             while (_damageReceived.Count > 0)
             {
                 var damage = _damageReceived.Dequeue();
-                _health.Decrease(damage);
-                await _animator.PlayDamaged();
+                if (_health.Health.Value > 0)
+                {
+                    _health.Decrease(damage);
+                    await _animator.PlayDamaged();
+                }
             }
 
             _isProcessing = false;
             _enemyMoveProvider.SetInterrupted(false);
             _animator.PlayMove(); // todo ?
-        }
+        } 
     }
 }
